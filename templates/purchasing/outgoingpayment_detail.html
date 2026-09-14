@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}{{ payment.payment_number }} - ERP System{% endblock %}
+
+{% block content %}
+<h2>{{ payment.payment_number }}</h2>
+
+<div class="detail-grid">
+    <p><strong>Supplier:</strong> {{ payment.supplier.name }}</p>
+    <p><strong>Invoice:</strong> {{ payment.invoice.invoice_number|default:"-" }}</p>
+    <p><strong>Date:</strong> {{ payment.payment_date }}</p>
+    <p><strong>Amount:</strong> {{ payment.amount|floatformat:2 }}</p>
+    <p><strong>Method:</strong> {{ payment.payment_method }}</p>
+    <p><strong>Reference:</strong> {{ payment.reference|default:"-" }}</p>
+    <p><strong>Status:</strong> <span class="status-badge status-{{ payment.status|lower }}">{{ payment.get_status_display }}</span></p>
+</div>
+
+<div class="actions" style="margin: 20px 0;">
+    {% for label, href, style in actions %}
+    <a href="{{ href }}" class="btn {{ style }}">{{ label }}</a>
+    {% endfor %}
+    <a href="{% url 'outgoingpayment_list' %}" class="btn btn-secondary">Back</a>
+</div>
+{% endblock %}

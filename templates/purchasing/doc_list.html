@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load erp_extras %}
+{% block title %}{{ title }} - ERP System{% endblock %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+
+<form class="search-form" method="get">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search...">
+    <select name="status">
+        <option value="">All Statuses</option>
+        {% for s in statuses %}
+        <option value="{{ s }}" {% if s == status %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Filter</button>
+    <a href="{% url create_url %}" class="btn">Add</a>
+</form>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                {% for col in columns %}<th>{{ col.label }}</th>{% endfor %}
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in page_obj %}
+            <tr>
+                {% for col in columns %}
+                <td>
+                    {% if col.link %}
+                    <a href="{% url col.link obj.pk %}">{{ obj|attr:col.key }}</a>
+                    {% else %}
+                    {{ obj|attr:col.key }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+                <td class="actions-cell">
+                    <a href="{% url detail_url obj.pk %}" class="btn btn-secondary">View</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="{{ columns|length|add:1 }}">No records found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% include 'includes/pagination.html' %}
+{% endblock %}

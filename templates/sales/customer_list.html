@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Customers - ERP System{% endblock %}
+
+{% block content %}
+<h2>Customers</h2>
+
+<form class="search-form" method="get">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search customers...">
+    <button type="submit">Filter</button>
+    <a href="{% url 'customer_create' %}" class="btn">Add Customer</a>
+</form>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Contact</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Receivable</th>
+                <th>Active</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in page_obj %}
+            <tr>
+                <td>{{ customer.customer_code }}</td>
+                <td>{{ customer.name }}</td>
+                <td>{{ customer.contact_person|default:"-" }}</td>
+                <td>{{ customer.phone|default:"-" }}</td>
+                <td>{{ customer.email|default:"-" }}</td>
+                <td>{{ customer.receivable|floatformat:2 }}</td>
+                <td>{{ customer.is_active|yesno:"Yes,No" }}</td>
+                <td class="actions-cell">
+                    <a href="{% url 'customer_update' customer.pk %}" class="btn btn-secondary">Edit</a>
+                    <a href="{% url 'customer_delete' customer.pk %}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="8">No customers found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% include 'includes/pagination.html' %}
+{% endblock %}

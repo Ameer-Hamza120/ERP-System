@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load erp_extras %}
+{% block title %}{{ doc_number }} - ERP System{% endblock %}
+
+{% block content %}
+<h2>{{ doc_number }}</h2>
+
+<div class="detail-grid">
+    {% for label, value in info_fields %}
+    <p><strong>{{ label }}:</strong> {{ value }}</p>
+    {% endfor %}
+</div>
+
+{% if lines %}
+<h3>{{ lines_title }}</h3>
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>Discount %</th>
+                <th>Tax %</th>
+                {% if show_reason %}<th>Reason</th>{% endif %}
+                <th>Line Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for line in lines %}
+            <tr>
+                <td>{{ line.item.name }}</td>
+                <td>{{ line.quantity }}</td>
+                <td>{{ line.unit_price }}</td>
+                <td>{{ line.discount_percent }}</td>
+                <td>{{ line.tax_percent }}</td>
+                {% if show_reason %}<td>{{ line.reason|default:"-" }}</td>{% endif %}
+                <td>{{ line.line_total|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if total %}
+<p><strong>Total:</strong> {{ total|floatformat:2 }}</p>
+{% endif %}
+
+<div class="actions" style="margin: 20px 0;">
+    {% for label, href, style in actions %}
+    <a href="{{ href }}" class="btn {{ style }}">{{ label }}</a>
+    {% endfor %}
+    <a href="{% url list_url %}" class="btn btn-secondary">Back</a>
+</div>
+{% endblock %}

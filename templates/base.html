@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ERP System{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="layout">
+        <!-- Mobile overlay for sidebar -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2 class="brand">ERP System</h2>
+                <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">&times;</button>
+            </div>
+            <nav>
+                <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <span class="nav-icon">&#9632;</span> Dashboard
+                </a>
+
+                {% if perms.auth.view_user or perms.auth.view_group or perms.accounts.change_companysettings or perms.accounts.view_documentsequence %}
+                <h3>Administration</h3>
+                {% if perms.auth.view_user %}
+                <a href="{% url 'user_list' %}" class="{% if 'user' in request.path and 'users' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Users
+                </a>
+                {% endif %}
+                {% if perms.auth.view_group %}
+                <a href="{% url 'role_list' %}" class="{% if 'role' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Roles
+                </a>
+                {% endif %}
+                {% if perms.accounts.change_companysettings %}
+                <a href="{% url 'company_settings' %}" class="{% if 'company' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Company Settings
+                </a>
+                {% endif %}
+                {% if perms.accounts.view_documentsequence %}
+                <a href="{% url 'document_sequence_list' %}" class="{% if 'document-sequences' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Document Numbering
+                </a>
+                {% endif %}
+                {% endif %}
+
+                {% if perms.inventory.view_item or perms.inventory.view_itemgroup or perms.inventory.view_warehouse or perms.inventory.view_stock or perms.inventory.view_stocktransfer %}
+                <h3>Inventory</h3>
+                {% if perms.inventory.view_item %}
+                <a href="{% url 'item_list' %}" class="{% if 'item' in request.path and 'item-group' not in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Items
+                </a>
+                {% endif %}
+                {% if perms.inventory.view_itemgroup %}
+                <a href="{% url 'itemgroup_list' %}" class="{% if 'item-group' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Item Groups
+                </a>
+                {% endif %}
+                {% if perms.inventory.view_warehouse %}
+                <a href="{% url 'warehouse_list' %}" class="{% if 'warehouse' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Warehouses
+                </a>
+                {% endif %}
+                {% if perms.inventory.view_stock %}
+                <a href="{% url 'stock_list' %}" class="{% if 'stock' in request.path and 'transfer' not in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Stock
+                </a>
+                {% endif %}
+                {% if perms.inventory.view_stocktransfer %}
+                <a href="{% url 'stocktransfer_list' %}" class="{% if 'transfer' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Stock Transfers
+                </a>
+                {% endif %}
+                {% endif %}
+
+                {% if perms.sales.view_customer or perms.sales.view_salesquotation or perms.sales.view_salesorder or perms.sales.view_delivery or perms.sales.view_arinvoice or perms.sales.view_incomingpayment %}
+                <h3>Sales (A/R)</h3>
+                {% if perms.sales.view_customer %}
+                <a href="{% url 'customer_list' %}" class="{% if 'customers' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Customers
+                </a>
+                {% endif %}
+                {% if perms.sales.view_salesquotation %}
+                <a href="{% url 'salesquotation_list' %}" class="{% if 'quotations' in request.path and 'sales/quotations' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Quotations
+                </a>
+                {% endif %}
+                {% if perms.sales.view_salesorder %}
+                <a href="{% url 'salesorder_list' %}" class="{% if 'orders' in request.path and 'sales/orders' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Sales Orders
+                </a>
+                {% endif %}
+                {% if perms.sales.view_delivery %}
+                <a href="{% url 'delivery_list' %}" class="{% if 'deliveries' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Deliveries
+                </a>
+                {% endif %}
+                {% if perms.sales.view_returnrequest %}
+                <a href="{% url 'returnrequest_list' %}" class="{% if 'return-requests' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Return Requests
+                </a>
+                {% endif %}
+                {% if perms.sales.view_salesreturn %}
+                <a href="{% url 'salesreturn_list' %}" class="{% if 'returns' in request.path and 'sales/returns' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Returns
+                </a>
+                {% endif %}
+                {% if perms.sales.view_arinvoice %}
+                <a href="{% url 'arinvoice_list' %}" class="{% if 'invoices' in request.path and 'sales/invoices' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> A/R Invoices
+                </a>
+                {% endif %}
+                {% if perms.sales.view_arcreditmemo %}
+                <a href="{% url 'arcreditmemo_list' %}" class="{% if 'credit-memos' in request.path and 'sales/credit-memos' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> A/R Credit Memos
+                </a>
+                {% endif %}
+                {% if perms.sales.view_incomingpayment %}
+                <a href="{% url 'incomingpayment_list' %}" class="{% if 'payments' in request.path and 'sales/payments' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Incoming Payments
+                </a>
+                {% endif %}
+                {% endif %}
+
+                {% if perms.purchasing.view_supplier or perms.purchasing.view_purchaserequest or perms.purchasing.view_purchasequotation or perms.purchasing.view_purchaseorder or perms.purchasing.view_goodsreceipt or perms.purchasing.view_apinvoice or perms.purchasing.view_outgoingpayment %}
+                <h3>Purchasing (A/P)</h3>
+                {% if perms.purchasing.view_supplier %}
+                <a href="{% url 'supplier_list' %}" class="{% if 'suppliers' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Suppliers
+                </a>
+                {% endif %}
+                {% if perms.purchasing.view_purchaserequest %}
+                <a href="{% url 'purchaserequest_list' %}" class="{% if 'requests' in request.path and 'purchasing/requests' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Purchase Requests
+                </a>
+                {% endif %}
+                {% if perms.purchasing.view_purchasequotation %}
+                <a href="{% url 'purchasequotation_list' %}" class="{% if 'quotations' in request.path and 'purchasing/quotations' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Purchase Quotations
+                </a>
+                {% endif %}
+                {% if perms.purchasing.view_purchaseorder %}
+                <a href="{% url 'purchaseorder_list' %}" class="{% if 'orders' in request.path and 'purchasing/orders' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Purchase Orders
+                </a>
+                {% endif %}
+                {% if perms.purchasing.view_goodsreceipt %}
+                <a href="{% url 'goodsreceipt_list' %}" class="{% if 'goods-receipts' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Goods Receipts
+                </a>
+                {% endif %}
+                {% if perms.purchasing.view_apinvoice %}
+                <a href="{% url 'apinvoice_list' %}" class="{% if 'invoices' in request.path and 'purchasing/invoices' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> A/P Invoices
+                </a>
+                {% endif %}
+                {% if perms.purchasing.view_apcreditmemo %}
+                <a href="{% url 'apcreditmemo_list' %}" class="{% if 'credit-memos' in request.path and 'purchasing/credit-memos' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> A/P Credit Memos
+                </a>
+                {% endif %}
+                {% if perms.purchasing.view_outgoingpayment %}
+                <a href="{% url 'outgoingpayment_list' %}" class="{% if 'payments' in request.path and 'purchasing/payments' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Outgoing Payments
+                </a>
+                {% endif %}
+                {% endif %}
+
+                {% if perms.inventory.view_stock or perms.inventory.view_item or perms.inventory.view_stocktransfer %}
+                <h3>Reports</h3>
+                {% if perms.inventory.view_stock %}
+                <a href="{% url 'inventory_report' %}" class="{% if 'reports/inventory' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Inventory Report
+                </a>
+                {% endif %}
+                {% if perms.inventory.view_item %}
+                <a href="{% url 'low_stock_report' %}" class="{% if 'low-stock' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Low Stock Report
+                </a>
+                {% endif %}
+                {% if perms.inventory.view_stocktransfer %}
+                <a href="{% url 'stock_transfer_report' %}" class="{% if 'reports/stock-transfers' in request.path %}active{% endif %}">
+                    <span class="nav-icon">&#9679;</span> Stock Transfer Report
+                </a>
+                {% endif %}
+                {% endif %}
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="hamburger" id="menuToggle" aria-label="Open menu">
+                        <span></span><span></span><span></span>
+                    </button>
+                    <span class="topbar-title">{% block page_title %}ERP Dashboard{% endblock %}</span>
+                </div>
+                <div class="topbar-right">
+                    {% if user.is_authenticated %}
+                        {% if perms.inventory.view_item %}
+                        <form method="get" action="{% url 'item_list' %}" class="topbar-search">
+                            <input type="text" name="q" placeholder="Search items..." aria-label="Search">
+                        </form>
+                        {% endif %}
+
+                        {% if pending_approval_count %}
+                        <a href="{% url 'stocktransfer_list' %}?status=Pending" class="topbar-notification" title="Pending approvals">
+                            Pending <span class="notif-badge">{{ pending_approval_count }}</span>
+                        </a>
+                        {% endif %}
+
+                        <div class="topbar-profile">
+                            <span class="welcome-text">Welcome, <strong>{{ user.username }}</strong></span>
+                            <span class="profile-role">{{ user.groups.first.name|default:"No Role" }}</span>
+                        </div>
+                        <a href="{% url 'password_change' %}" class="topbar-link">Change Password</a>
+                        <form method="post" action="{% url 'logout' %}" class="logout-form">
+                            {% csrf_token %}
+                            <button type="submit" class="topbar-link logout-link">Logout</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="topbar-link">Login</a>
+                    {% endif %}
+                </div>
+            </header>
+
+            <main class="content">
+                {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% block content %}{% endblock %}
+            </main>
+
+            <footer class="footer">
+                &copy; {% now "Y" %} ERP System. All rights reserved.
+            </footer>
+        </div>
+    </div>
+
+    <script src="{% static 'js/main.js' %}?v=3"></script>
+</body>
+</html>

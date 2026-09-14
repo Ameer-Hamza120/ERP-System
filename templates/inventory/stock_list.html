@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Stock - ERP System{% endblock %}
+
+{% block content %}
+<h2>Stock</h2>
+
+<form class="search-form" method="get">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search stock...">
+    <button type="submit">Search</button>
+    <a href="{% url 'stock_in' %}" class="btn">Stock In</a>
+    <a href="{% url 'stock_out' %}" class="btn btn-danger">Stock Out</a>
+</form>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Warehouse</th>
+                <th>Quantity</th>
+                <th>Updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stock in page_obj %}
+            <tr>
+                <td>{{ stock.item.item_code }} - {{ stock.item.name }}</td>
+                <td>{{ stock.warehouse.name }}</td>
+                <td>{{ stock.quantity }}</td>
+                <td>{{ stock.updated_at }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No stock records.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% include 'includes/pagination.html' %}
+{% endblock %}

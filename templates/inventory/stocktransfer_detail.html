@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}{{ transfer.transfer_number }} - ERP System{% endblock %}
+
+{% block content %}
+<h2>{{ transfer.transfer_number }}</h2>
+
+<div class="detail-grid">
+    <p><strong>Item:</strong> {{ transfer.item.name }}</p>
+    <p><strong>From Warehouse:</strong> {{ transfer.from_warehouse.name }}</p>
+    <p><strong>To Warehouse:</strong> {{ transfer.to_warehouse.name }}</p>
+    <p><strong>Quantity:</strong> {{ transfer.quantity }}</p>
+    <p><strong>Transfer Date:</strong> {{ transfer.transfer_date }}</p>
+    <p><strong>Status:</strong> <span class="status-badge status-{{ transfer.status|lower }}">{{ transfer.status }}</span></p>
+    <p><strong>Requested By:</strong> {{ transfer.requested_by.username|default:"-" }}</p>
+    <p><strong>Approved By:</strong> {{ transfer.approved_by.username|default:"-" }}</p>
+    <p><strong>Notes:</strong> {{ transfer.notes|default:"-" }}</p>
+    <p><strong>Created At:</strong> {{ transfer.created_at }}</p>
+</div>
+
+{% if transfer.status == "Pending" and perms.inventory.change_stocktransfer %}
+    <a href="{% url 'stocktransfer_complete' transfer.pk %}" class="btn">Complete</a>
+    <a href="{% url 'stocktransfer_cancel' transfer.pk %}" class="btn btn-danger">Cancel</a>
+{% endif %}
+<a href="{% url 'stocktransfer_list' %}" class="btn btn-secondary">Back to Transfers</a>
+{% endblock %}

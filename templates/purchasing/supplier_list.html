@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Suppliers - ERP System{% endblock %}
+
+{% block content %}
+<h2>Suppliers</h2>
+
+<form class="search-form" method="get">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search suppliers...">
+    <button type="submit">Filter</button>
+    <a href="{% url 'supplier_create' %}" class="btn">Add Supplier</a>
+</form>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Contact</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Payable</th>
+                <th>Active</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for supplier in page_obj %}
+            <tr>
+                <td>{{ supplier.supplier_code }}</td>
+                <td>{{ supplier.name }}</td>
+                <td>{{ supplier.contact_person|default:"-" }}</td>
+                <td>{{ supplier.phone|default:"-" }}</td>
+                <td>{{ supplier.email|default:"-" }}</td>
+                <td>{{ supplier.payable|floatformat:2 }}</td>
+                <td>{{ supplier.is_active|yesno:"Yes,No" }}</td>
+                <td class="actions-cell">
+                    <a href="{% url 'supplier_update' supplier.pk %}" class="btn btn-secondary">Edit</a>
+                    <a href="{% url 'supplier_delete' supplier.pk %}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="8">No suppliers found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% include 'includes/pagination.html' %}
+{% endblock %}

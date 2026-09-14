@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Roles - ERP System{% endblock %}
+
+{% block content %}
+<h2>Roles</h2>
+<a href="{% url 'role_create' %}" class="btn">Add Role</a>
+<div class="table-container">
+    <table>
+        <thead>
+            <tr><th>Role Name</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+            {% for role in roles %}
+            <tr>
+                <td>{{ role.name }}</td>
+                <td class="actions-cell">
+                    <a href="{% url 'role_update' role.pk %}" class="btn btn-secondary">Edit Permissions</a>
+                    <a href="{% url 'role_delete' role.pk %}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="2">No roles found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

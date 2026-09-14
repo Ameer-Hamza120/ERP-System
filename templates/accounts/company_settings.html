@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Company Settings - ERP System{% endblock %}
+
+{% block content %}
+<h2>Company Settings</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Settings</button>
+</form>
+{% endblock %}

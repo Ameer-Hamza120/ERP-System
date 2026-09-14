@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} - ERP System{% endblock %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if formset %}
+    <h3>{{ lines_title }}</h3>
+    {{ formset.management_form }}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Discount %</th>
+                    <th>Tax %</th>
+                    {% if show_reason %}<th>Reason</th>{% endif %}
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for line_form in formset %}
+                <tr>
+                    {% for hidden in line_form.hidden_fields %}{{ hidden }}{% endfor %}
+                    <td>{{ line_form.item }}{{ line_form.item.errors }}</td>
+                    <td>{{ line_form.quantity }}{{ line_form.quantity.errors }}</td>
+                    <td>{{ line_form.unit_price }}{{ line_form.unit_price.errors }}</td>
+                    <td>{{ line_form.discount_percent }}{{ line_form.discount_percent.errors }}</td>
+                    <td>{{ line_form.tax_percent }}{{ line_form.tax_percent.errors }}</td>
+                    {% if show_reason %}<td>{{ line_form.reason }}{{ line_form.reason.errors }}</td>{% endif %}
+                    <td>{{ line_form.DELETE }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    <button type="submit">Save</button>
+    <a href="{% url cancel_url %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

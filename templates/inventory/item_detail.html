@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}{{ item.name }} - ERP System{% endblock %}
+
+{% block content %}
+<h2>{{ item.item_code }} - {{ item.name }}</h2>
+
+<div class="detail-grid">
+    <p><strong>Group:</strong> {{ item.group.name|default:"-" }}</p>
+    <p><strong>Description:</strong> {{ item.description|default:"-" }}</p>
+    <p><strong>Unit:</strong> {{ item.unit_of_measure }}</p>
+    <p><strong>Purchase Price:</strong> {{ item.purchase_price }}</p>
+    <p><strong>Selling Price:</strong> {{ item.selling_price }}</p>
+    <p><strong>Minimum Stock:</strong> {{ item.minimum_stock_level }}</p>
+    <p><strong>Current Stock:</strong> {{ item.current_stock }}</p>
+    <p><strong>Active:</strong> {{ item.is_active|yesno:"Yes,No" }}</p>
+</div>
+
+<h3>Stock by Warehouse</h3>
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Warehouse</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stock in stocks %}
+            <tr>
+                <td>{{ stock.warehouse.name }}</td>
+                <td>{{ stock.quantity }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="2">No stock records.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<a href="{% url 'item_list' %}" class="btn btn-secondary">Back to Items</a>
+{% endblock %}

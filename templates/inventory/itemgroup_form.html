@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} - ERP System{% endblock %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+    <a href="{% url 'itemgroup_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

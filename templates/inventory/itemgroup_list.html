@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Item Groups - ERP System{% endblock %}
+
+{% block content %}
+<h2>Item Groups</h2>
+
+<form class="search-form" method="get">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search groups...">
+    <button type="submit">Search</button>
+    <a href="{% url 'itemgroup_create' %}" class="btn">Add Item Group</a>
+</form>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Active</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for group in page_obj %}
+            <tr>
+                <td>{{ group.name }}</td>
+                <td>{{ group.description|default:"-" }}</td>
+                <td>{{ group.is_active|yesno:"Yes,No" }}</td>
+                <td class="actions-cell">
+                    <a href="{% url 'itemgroup_update' group.pk %}" class="btn btn-secondary">Edit</a>
+                    <a href="{% url 'itemgroup_delete' group.pk %}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No item groups found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% include 'includes/pagination.html' %}
+{% endblock %}

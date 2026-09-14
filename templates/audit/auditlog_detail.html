@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Audit Log Detail - ERP System{% endblock %}
+
+{% block content %}
+<h2>Audit Log Detail</h2>
+
+<div class="detail-grid">
+    <div><strong>Date/Time:</strong> {{ log.created_at|date:"Y-m-d H:i:s" }}</div>
+    <div><strong>User:</strong> {{ log.username }}</div>
+    <div><strong>Action:</strong> <span class="status-badge status-{{ log.action|lower }}">{{ log.action }}</span></div>
+    <div><strong>Module:</strong> {{ log.app_label }}</div>
+    <div><strong>Model:</strong> {{ log.model_name }}</div>
+    <div><strong>Object ID:</strong> {{ log.object_id }}</div>
+    <div><strong>Object:</strong> {{ log.object_repr }}</div>
+    <div><strong>IP Address:</strong> {{ log.ip_address|default:"-" }}</div>
+    <div><strong>User Agent:</strong> {{ log.user_agent|truncatechars:100 }}</div>
+</div>
+
+{% if log.old_values %} 
+<div class="table-container">
+    <h3>Old Values</h3>
+    <table>
+        <thead><tr><th>Field</th><th>Value</th></tr></thead>
+        <tbody>
+            {% for key, value in log.old_values.items %}
+            <tr><td>{{ key }}</td><td>{% if value is not None %}{{ value }}{% else %}-{% endif %}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if log.new_values %}
+<div class="table-container">
+    <h3>New Values</h3>
+    <table>
+        <thead><tr><th>Field</th><th>Value</th></tr></thead>
+        <tbody>
+            {% for key, value in log.new_values.items %}
+            <tr><td>{{ key }}</td><td>{% if value is not None %}{{ value }}{% else %}-{% endif %}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<a href="{% url 'auditlog_list' %}" class="btn btn-secondary">Back to Audit Log</a>
+{% endblock %}

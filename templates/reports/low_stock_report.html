@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Low Stock Report - ERP System{% endblock %}
+
+{% block content %}
+<h2>Low Stock Report</h2>
+
+<form class="search-form" method="get">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search items...">
+    <button type="submit">Search</button>
+    <a href="{% url 'export_low_stock_csv' %}" class="btn">Export CSV</a>
+</form>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Item Code</th>
+                <th>Item Name</th>
+                <th>Minimum Stock</th>
+                <th>Current Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.item_code }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.minimum_stock_level }}</td>
+                <td>{{ item.total_stock|default:0 }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No low stock items.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

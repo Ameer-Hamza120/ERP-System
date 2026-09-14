@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Document Sequences - ERP System{% endblock %}
+
+{% block content %}
+<h2>Document Numbering</h2>
+<p class="helptext">Configure the numbering for ERP documents (SO, PO, INV, GR, ST, ...). Numbers are guaranteed unique per document type.</p>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Document Type</th>
+                <th>Prefix</th>
+                <th>Include Year</th>
+                <th>Next Number</th>
+                <th>Padding</th>
+                <th>Last Generated</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for seq in sequences %}
+            <tr>
+                <td>{{ seq.document_type }}</td>
+                <td>{{ seq.prefix }}</td>
+                <td>{{ seq.include_year|yesno:"Yes,No" }}</td>
+                <td>{{ seq.next_number }}</td>
+                <td>{{ seq.padding }}</td>
+                <td>{{ seq.last_number|default:"-" }}</td>
+                <td class="actions-cell">
+                    <a href="{% url 'document_sequence_update' seq.pk %}" class="btn btn-secondary">Edit</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7">No document sequences configured. Run <code>python manage.py setup_roles</code> to create defaults.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

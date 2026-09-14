@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Stock Transfer Report - ERP System{% endblock %}
+
+{% block content %}
+<h2>Stock Transfer Report</h2>
+
+<form class="search-form" method="get">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search transfers...">
+    <select name="status">
+        <option value="">All Statuses</option>
+        {% for s in statuses %}
+        <option value="{{ s }}" {% if s == status %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Filter</button>
+    <a href="{% url 'export_transfer_csv' %}" class="btn">Export CSV</a>
+</form>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Transfer Number</th>
+                <th>Item</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Quantity</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transfer in page_obj %}
+            <tr>
+                <td>{{ transfer.transfer_number }}</td>
+                <td>{{ transfer.item.name }}</td>
+                <td>{{ transfer.from_warehouse.name }}</td>
+                <td>{{ transfer.to_warehouse.name }}</td>
+                <td>{{ transfer.quantity }}</td>
+                <td>{{ transfer.transfer_date }}</td>
+                <td><span class="status-badge status-{{ transfer.status|lower }}">{{ transfer.status }}</span></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7">No data found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% include 'includes/pagination.html' %}
+{% endblock %}

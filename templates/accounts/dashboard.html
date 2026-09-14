@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - ERP System{% endblock %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+<div class="cards">
+    {% if total_users is not None %}
+    <div class="card">
+        <h3>Total Users</h3>
+        <p>{{ total_users }}</p>
+    </div>
+    {% endif %}
+    {% if total_items is not None %}
+    <div class="card">
+        <h3>Total Items</h3>
+        <p>{{ total_items }}</p>
+    </div>
+    {% endif %}
+    {% if total_item_groups is not None %}
+    <div class="card">
+        <h3>Item Groups</h3>
+        <p>{{ total_item_groups }}</p>
+    </div>
+    {% endif %}
+    {% if total_warehouses is not None %}
+    <div class="card">
+        <h3>Warehouses</h3>
+        <p>{{ total_warehouses }}</p>
+    </div>
+    {% endif %}
+    {% if total_stock is not None %}
+    <div class="card">
+        <h3>Total Stock</h3>
+        <p>{{ total_stock }}</p>
+    </div>
+    {% endif %}
+    {% if pending_approvals is not None %}
+    <div class="card">
+        <h3>Pending Approvals</h3>
+        <p>{{ pending_approvals }}</p>
+    </div>
+    {% endif %}
+    {% if total_customers is not None %}
+    <div class="card">
+        <h3>Customers</h3>
+        <p>{{ total_customers }}</p>
+    </div>
+    {% endif %}
+    {% if total_suppliers is not None %}
+    <div class="card">
+        <h3>Suppliers</h3>
+        <p>{{ total_suppliers }}</p>
+    </div>
+    {% endif %}
+    {% if open_ar_invoices is not None %}
+    <div class="card">
+        <h3>Open A/R Invoices</h3>
+        <p>{{ open_ar_invoices }}</p>
+    </div>
+    {% endif %}
+    {% if open_sales_orders is not None %}
+    <div class="card">
+        <h3>Open Sales Orders</h3>
+        <p>{{ open_sales_orders }}</p>
+    </div>
+    {% endif %}
+    {% if open_purchase_orders is not None %}
+    <div class="card">
+        <h3>Open Purchase Orders</h3>
+        <p>{{ open_purchase_orders }}</p>
+    </div>
+    {% endif %}
+    </div>
+<div class="dashboard-grid">
+{% if low_stock_items %}
+    <div>
+        <h3>Low Stock Items</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>Min Stock</th>
+                        <th>Current</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in low_stock_items %}
+                    <tr>
+                        <td>{{ item.item_code }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.minimum_stock_level }}</td>
+                        <td>{{ item.total_stock|default:0 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4">No low stock items.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}
+
+</div>
+{% endblock %}

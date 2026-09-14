@@ -1,0 +1,21 @@
+{% if page_obj.paginator.num_pages > 1 %}
+<ul class="pagination">
+    {% if page_obj.has_previous %}
+        <li><a href="?page=1&q={{ query }}&group={{ group_id|default:'' }}&status={{ status|default:'' }}">&laquo; first</a></li>
+        <li><a href="?page={{ page_obj.previous_page_number }}&q={{ query }}&group={{ group_id|default:'' }}&status={{ status|default:'' }}">previous</a></li>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <li><span class="current">{{ num }}</span></li>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <li><a href="?page={{ num }}&q={{ query }}&group={{ group_id|default:'' }}&status={{ status|default:'' }}">{{ num }}</a></li>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <li><a href="?page={{ page_obj.next_page_number }}&q={{ query }}&group={{ group_id|default:'' }}&status={{ status|default:'' }}">next</a></li>
+        <li><a href="?page={{ page_obj.paginator.num_pages }}&q={{ query }}&group={{ group_id|default:'' }}&status={{ status|default:'' }}">last &raquo;</a></li>
+    {% endif %}
+</ul>
+{% endif %}

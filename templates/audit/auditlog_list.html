@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Audit Log - ERP System{% endblock %}
+
+{% block content %}
+<h2>Audit Log</h2>
+
+<form class="search-form" method="get">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search audit log...">
+    <select name="action">
+        <option value="">All Actions</option>
+        {% for act in actions %}
+        <option value="{{ act }}" {% if action == act %}selected{% endif %}>{{ act }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Filter</button>
+    <a href="{% url 'auditlog_list' %}" class="btn btn-secondary">Clear</a>
+</form>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Date/Time</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Module</th>
+                <th>Object</th>
+                <th>IP Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in page_obj %}
+            <tr>
+                <td>{{ log.created_at|date:"Y-m-d H:i" }}</td>
+                <td>{{ log.username }}</td>
+                <td><span class="status-badge status-{{ log.action|lower }}">{{ log.action }}</span></td>
+                <td>{{ log.app_label }}</td>
+                <td><a href="{% url 'auditlog_detail' log.pk %}">{{ log.object_repr|truncatechars:50 }}</a></td>
+                <td>{{ log.ip_address|default:"-" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">No audit log entries found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% include 'includes/pagination.html' %}
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Delete Item Group - ERP System{% endblock %}
+
+{% block content %}
+<h2>Delete Item Group</h2>
+<p>Are you sure you want to delete item group <strong>{{ group.name }}</strong>?</p>
+<form method="post" data-confirm="Are you sure you want to delete this item group?">
+    {% csrf_token %}
+    <button type="submit" class="btn-danger">Yes, Delete</button>
+    <a href="{% url 'itemgroup_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
