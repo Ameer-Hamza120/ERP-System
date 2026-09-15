@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django import forms
 from django.urls import reverse
+from .forms import ItemForm
 from .models import ItemGroup, Item, Warehouse, Stock, StockMovement, StockTransfer
 
 
@@ -38,6 +40,15 @@ class InventoryTests(TestCase):
         self.assertTrue(Item.objects.filter(name="Mouse").exists())
         item = Item.objects.get(name="Mouse")
         self.assertTrue(item.item_code.startswith("ITM-"))
+
+    def test_item_form_uses_unit_of_measure_dropdown(self):
+        field = ItemForm().fields["unit_of_measure"]
+
+        self.assertIsInstance(field.widget, forms.Select)
+        self.assertEqual(
+            [value for value, _ in field.choices],
+            [value for value, _ in Item.UNIT_OF_MEASURE_CHOICES],
+        )
 
     def test_stock_in(self):
         response = self.client.post(

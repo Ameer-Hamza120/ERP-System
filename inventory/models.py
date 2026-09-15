@@ -29,6 +29,20 @@ class Item(models.Model):
     Item master record.
     """
 
+    UNIT_OF_MEASURE_CHOICES = [
+        ("Piece", "Piece"),
+        ("Box", "Box"),
+        ("Pack", "Pack"),
+        ("Carton", "Carton"),
+        ("Dozen", "Dozen"),
+        ("Set", "Set"),
+        ("Kilogram", "Kilogram"),
+        ("Gram", "Gram"),
+        ("Liter", "Liter"),
+        ("Milliliter", "Milliliter"),
+        ("Meter", "Meter"),
+    ]
+
     item_code = models.CharField(max_length=50, unique=True, blank=True)
     name = models.CharField(max_length=200)
     sku = models.CharField(max_length=50, blank=True)
@@ -37,7 +51,11 @@ class Item(models.Model):
         ItemGroup, on_delete=models.SET_NULL, null=True, blank=True, related_name="items"
     )
     description = models.TextField(blank=True)
-    unit_of_measure = models.CharField(max_length=20, default="Piece")
+    unit_of_measure = models.CharField(
+        max_length=20,
+        choices=UNIT_OF_MEASURE_CHOICES,
+        default="Piece",
+    )
     purchase_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     selling_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     tax_percent = models.DecimalField(max_digits=5, decimal_places=2, default=0, blank=True)
