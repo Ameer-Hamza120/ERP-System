@@ -41,6 +41,36 @@ class InventoryTests(TestCase):
         item = Item.objects.get(name="Mouse")
         self.assertTrue(item.item_code.startswith("ITM-"))
 
+    def test_item_create_with_current_stock(self):
+        response = self.client.post(
+            reverse("item_create"),
+            {
+                "name": "Monitor",
+                "group": self.group.id,
+                "unit_of_measure": "Piece",
+                "purchase_price": 50,
+                "selling_price": 75,
+                "minimum_stock_level": 2,
+                "current_stock": 12,
+                "current_stock_warehouse": self.wh1.id,
+                "is_active": True,
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+        item = Item.objects.get(name="Monitor")
+        self.assertEqual(
+            Stock.objects.get(item=item, warehouse=self.wh1).quantity,
+            12,
+        )
+        self.assertTrue(
+            StockMovement.objects.filter(
+                item=item,
+                warehouse=self.wh1,
+                movement_type="Opening Stock",
+                quantity=12,
+            ).exists()
+        )
+
     def test_item_form_uses_unit_of_measure_dropdown(self):
         field = ItemForm().fields["unit_of_measure"]
 
@@ -49,6 +79,17 @@ class InventoryTests(TestCase):
             [value for value, _ in field.choices],
             [value for value, _ in Item.UNIT_OF_MEASURE_CHOICES],
         )
+
+    def test_item_form_does_not_include_image(self):
+        self.assertNotIn("image", ItemForm().fields)
+
+    def test_existing_item_form_shows_current_stock_read_only(self):
+        Stock.objects.create(item=self.item, warehouse=self.wh1, quantity=7)
+        form = ItemForm(instance=self.item)
+        self.assertIn("current_stock", form.fields)
+        self.assertEqual(form.initial["current_stock"], 7)
+        self.assertTrue(form.fields["current_stock"].disabled)
+        self.assertNotIn("current_stock_warehouse", form.fields)
 
     def test_stock_in(self):
         response = self.client.post(

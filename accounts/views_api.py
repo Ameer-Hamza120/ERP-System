@@ -216,3 +216,46 @@ class DocumentSequenceViewSet(
 
     def partial_update(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
+
+
+class HealthCheckView(viewsets.ViewSet):
+    """Health check endpoint for monitoring and load balancers."""
+
+    permission_classes = [AllowAny]
+
+    def list(self, request):
+        from django.db import connection
+        from django.core.cache import cache
+        import redis
+
+        health_status = {
+            "status": "healthy",
+            "database": "ok",
+            "cache": "ok",
+        }
+
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT 1")
+        except Exception as e:
+            health_status["database"] = f"error: {str(e)}"
+            health_status["status"] = "unhealthy"
+
+        try:
+            cache.set("health_check", "ok", 10)
+            cache.get("health_check")
+        except Exception as e:
+            health_status["cache"] = f"error: {str(e)}"
+            health_status["status"] = "degraded"
+
+        http_status = (
+            status.HTTP_200_OK
+            if health_status["status"] == "healthy"
+            else (
+                status.HTTP_503_SERVICE_UNAVAILABLE
+                if health_status["status"] == "unhealthy"
+                else status.HTTP_200_OK
+            )
+        )
+
+        return Response(health_status, status=http_status)

@@ -60,7 +60,7 @@ Roles are stored in the database. Administrators can create/edit/delete roles vi
 | Module | Key Features |
 |--------|-------------|
 | **Item Groups** | CRUD, active/inactive, search |
-| **Items** | Code, name, SKU, barcode, group, description, UOM, purchase/selling price, tax %, min/max stock, reorder level, image, active/inactive |
+| **Items** | Code, name, SKU, barcode, group, description, UOM, purchase/selling price, tax %, min/max stock, reorder level, opening stock by warehouse, active/inactive |
 | **Warehouses** | Code, name, location, address, city, country, manager, description, active/inactive |
 | **Stock** | Per-item-per-warehouse quantity, Stock In/Out with validation, full movement history |
 | **Stock Movements** | Immutable audit trail: Opening Stock, Stock In, Stock Out, Adjustment, Transfer Out/In, Purchase Receipt, Sales Delivery, Return |

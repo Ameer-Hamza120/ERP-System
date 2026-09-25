@@ -173,7 +173,24 @@ def item_create(request):
     if request.method == "POST":
         form = ItemForm(request.POST)
         if form.is_valid():
-            obj = form.save()
+            current_stock = form.cleaned_data.get("current_stock") or 0
+            warehouse = form.cleaned_data.get("current_stock_warehouse")
+            with transaction.atomic():
+                obj = form.save()
+                if current_stock:
+                    stock = Stock.objects.create(
+                        item=obj,
+                        warehouse=warehouse,
+                        quantity=current_stock,
+                    )
+                    _record_stock_movement(
+                        obj,
+                        warehouse,
+                        current_stock,
+                        "Opening Stock",
+                        request.user,
+                        stock.quantity,
+                    )
             log_activity(
                 request.user,
                 "Create Item",

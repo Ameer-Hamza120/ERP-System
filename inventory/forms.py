@@ -14,6 +14,18 @@ class ItemForm(forms.ModelForm):
         label="Item Code",
         help_text="Leave blank to auto-generate.",
     )
+    current_stock = forms.IntegerField(
+        required=False,
+        initial=0,
+        min_value=0,
+        label="Current Stock",
+        help_text="Opening quantity for the selected warehouse.",
+    )
+    current_stock_warehouse = forms.ModelChoiceField(
+        queryset=Warehouse.objects.filter(is_active=True),
+        required=False,
+        label="Stock Warehouse",
+    )
 
     class Meta:
         model = Item
@@ -31,12 +43,31 @@ class ItemForm(forms.ModelForm):
             "minimum_stock_level",
             "maximum_stock_level",
             "reorder_level",
-            "image",
             "is_active",
         ]
-        widgets = {
-            "image": forms.ClearableFileInput(attrs={"accept": "image/*"}),
-        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            current_stock = self.instance.current_stock
+            self.initial["current_stock"] = current_stock
+            self.fields["current_stock"].initial = current_stock
+            self.fields["current_stock"].disabled = True
+            self.fields["current_stock"].help_text = (
+                "Read-only total across all warehouses. Use Stock In/Out to change it."
+            )
+            self.fields.pop("current_stock_warehouse")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        current_stock = cleaned_data.get("current_stock") or 0
+        warehouse = cleaned_data.get("current_stock_warehouse")
+        if current_stock and not warehouse:
+            self.add_error(
+                "current_stock_warehouse",
+                "Select a warehouse when entering current stock.",
+            )
+        return cleaned_data
 
 
 class WarehouseForm(forms.ModelForm):

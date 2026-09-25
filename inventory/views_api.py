@@ -31,7 +31,24 @@ def api_items(request):
             return JsonResponse({"error": "Invalid JSON"}, status=400)
         form = ItemForm(data)
         if form.is_valid():
-            item = form.save()
+            current_stock = form.cleaned_data.get("current_stock") or 0
+            warehouse = form.cleaned_data.get("current_stock_warehouse")
+            with transaction.atomic():
+                item = form.save()
+                if current_stock:
+                    stock = Stock.objects.create(
+                        item=item,
+                        warehouse=warehouse,
+                        quantity=current_stock,
+                    )
+                    StockMovement.objects.create(
+                        item=item,
+                        warehouse=warehouse,
+                        quantity=current_stock,
+                        balance_after=stock.quantity,
+                        movement_type="Opening Stock",
+                        user=request.user,
+                    )
             log_activity(
                 request.user,
                 "Create Item",
